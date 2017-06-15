@@ -22,13 +22,13 @@ class Blog(db.Model):
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('base.html')
+    return render_template('base.html', title="Navigation")
 
 
 @app.route('/blog', methods=['GET'])
 def blogreader():
     blogs = Blog.query.filter_by(deleted=False).all()
-    return render_template('blogreader.html', blogs=blogs)
+    return render_template('blogreader.html', title="All Blog Posts", blogs=blogs)
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def blogwriter():
@@ -49,11 +49,11 @@ def blogwriter():
             db.session.commit()
             return redirect("/blog")
         else:
-            return render_template('blogwriter.html', blog_title=blog_title, blog_body=blog_body, title_error=title_error, body_error=body_error)
+            return render_template('blogwriter.html', title="Create New Blog Post", blog_title=blog_title, blog_body=blog_body, title_error=title_error, body_error=body_error)
         
 
     blogs = Blog.query.filter_by(deleted=False).all()
-    return render_template('blogwriter.html', blogs=blogs)
+    return render_template('blogwriter.html', title="Create New Blog Post", blogs=blogs)
 
 
 if __name__ == '__main__':
