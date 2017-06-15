@@ -38,6 +38,7 @@ def blogwriter():
         new_blog = Blog(blog_name, blog_content)
         db.session.add(new_blog)
         db.session.commit()
+        return redirect("/blog")
 
     blogs = Blog.query.filter_by(deleted=False).all()
     return render_template('blogwriter.html', blogs=blogs)
