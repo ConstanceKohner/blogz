@@ -33,12 +33,24 @@ def blogreader():
 @app.route('/newpost', methods=['POST', 'GET'])
 def blogwriter():
     if request.method == 'POST':
-        blog_name = request.form['title']
-        blog_content = request.form['body']
-        new_blog = Blog(blog_name, blog_content)
-        db.session.add(new_blog)
-        db.session.commit()
-        return redirect("/blog")
+        blog_title = request.form['title']
+        blog_body = request.form['body']
+        if blog_title == '':
+            title_error = 'You must enter a title for your blog post.'
+        else:
+            title_error = ''
+        if blog_body == '':
+            body_error = 'You must enter content for your blog post.'
+        else:
+            body_error = ''
+        if title_error == '' and body_error == '':
+            new_blog = Blog(blog_title, blog_body)
+            db.session.add(new_blog)
+            db.session.commit()
+            return redirect("/blog")
+        else:
+            return render_template('blogwriter.html')
+        
 
     blogs = Blog.query.filter_by(deleted=False).all()
     return render_template('blogwriter.html', blogs=blogs)
