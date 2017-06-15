@@ -25,9 +25,13 @@ def index():
     return render_template('base.html')
 
 
-@app.route('/blog', methods=['POST', 'GET'])
+@app.route('/blog', methods=['GET'])
 def blogreader():
+    blogs = Blog.query.filter_by(deleted=False).all()
+    return render_template('blogreader.html', blogs=blogs)
 
+@app.route('/newpost', methods=['POST', 'GET'])
+def blogwriter():
     if request.method == 'POST':
         blog_name = request.form['title']
         blog_content = request.form['body']
