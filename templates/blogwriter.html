@@ -3,12 +3,14 @@
 {% block content %}
     <h1>Post a new entry!</h1>
     <form method='post'>
-        <label>
-            Blog Title:
-            <input type="text" name='title' />
-            Blog Body:
-            <input type="text" name='body' />
-        </label>
+        <label for "blog_title">Blog Title:</label>
+        <input id="blog_title" type="text" name='title' value="{{blog_title}}"/>
+        <p>{{title_error}}</p>
+        
+        <label for "blog_body">Blog Body:</label>
+        <input id="blog_body" type="text" name='body' value="{{blog_body}}" />
+        <p>{{body_error}}</p>
+
         <input type="submit" value='Add Blog' />
     </form>
 

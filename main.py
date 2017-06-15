@@ -49,7 +49,7 @@ def blogwriter():
             db.session.commit()
             return redirect("/blog")
         else:
-            return render_template('blogwriter.html')
+            return render_template('blogwriter.html', blog_title=blog_title, blog_body=blog_body, title_error=title_error, body_error=body_error)
         
 
     blogs = Blog.query.filter_by(deleted=False).all()
