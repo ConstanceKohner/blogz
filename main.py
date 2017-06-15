@@ -20,8 +20,13 @@ class Blog(db.Model):
         self.body = body
         self.deleted = False
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['GET'])
 def index():
+    return render_template('base.html')
+
+
+@app.route('/blog', methods=['POST', 'GET'])
+def blogreader():
 
     if request.method == 'POST':
         blog_name = request.form['title']
