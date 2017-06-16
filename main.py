@@ -27,8 +27,15 @@ def index():
 
 @app.route('/blog', methods=['GET'])
 def blogreader():
-    blogs = Blog.query.filter_by(deleted=False).all()
-    return render_template('blogreader.html', title="All Blog Posts", blogs=blogs)
+    #if blog was passed an id that exists, it will go to that individual blog post, otherwise, it will go to the main blog page that lists all
+    blogid = request.args.get("id")
+    blog = Blog.query.filter_by(id = blogid).first()
+    if not blog:
+        blogs = Blog.query.filter_by(deleted=False).all()
+        return render_template('blogreader.html', title="All Blog Posts", blogs=blogs)
+    else:
+        return render_template('individualpost.html', title=blog.title, blog=blog)
+
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def blogwriter():
@@ -47,7 +54,7 @@ def blogwriter():
             new_blog = Blog(blog_title, blog_body)
             db.session.add(new_blog)
             db.session.commit()
-            return redirect("/blog")
+            return redirect("/blog?id="+str(new_blog.id))
         else:
             return render_template('blogwriter.html', title="Create New Blog Post", blog_title=blog_title, blog_body=blog_body, title_error=title_error, body_error=body_error)
         
