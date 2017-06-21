@@ -26,7 +26,7 @@ class Blog(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
-    #hashing to be added in future version
+    #hashing/salting to be added in future version
     password = db.Column(db.String(36))
     blogs = db.relationship('Blog', backref='owner')
 
@@ -111,15 +111,14 @@ def blogreader():
     blogid = request.args.get("id")
     blog = Blog.query.filter_by(id = blogid).first()
     if blog:
-        user = User.query.filter_by(id = blog.owner_id).first()
-        return render_template('individualpost.html', title=blog.title, blog=blog, user=user)
+        return render_template('individualpost.html', title=blog.title, blog=blog)
     else:
         #if blog was passed a userid that exists, it will go to that user's blog list. blogid takes priority.
         userid = request.args.get("user")
         user = User.query.filter_by(id = userid).first()
         if user:
             blogs = Blog.query.filter_by(owner_id = user.id).all()
-            return render_template('individualuser.html', title=user.username, blogs=blogs, user=user)
+            return render_template('individualuser.html', title=user.username, blogs=blogs)
         else:
             blogs = Blog.query.filter_by(deleted=False).all()
             return render_template('blogreader.html', title="All Blog Posts", blogs=blogs)
