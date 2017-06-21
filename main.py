@@ -118,7 +118,7 @@ def blogreader():
         user = User.query.filter_by(id = userid).first()
         if user:
             blogs = Blog.query.filter_by(owner_id = user.id).all()
-            return render_template('individualuser.html', title=user.username, blogs=blogs)
+            return render_template('individualuser.html', title=user.username, user=user, blogs=blogs)
         else:
             blogs = Blog.query.filter_by(deleted=False).all()
             return render_template('blogreader.html', title="All Blog Posts", blogs=blogs)
