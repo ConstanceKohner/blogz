@@ -44,7 +44,8 @@ def require_login():
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('base.html', title="Navigation")
+    userlist = User.query.all()
+    return render_template('index.html', title="User List", userlist = userlist)
 
 
 @app.route('/logout', methods=['POST'])
@@ -78,8 +79,8 @@ def register():
         username = request.form['username']
         password = request.form['password']
         verify = request.form['verify']
-        existinguser = User.query.filter_by(username=username).first()
-        if existinguser:
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
             flash("Username already in use", "error")
             return redirect("/signup")
         elif not (username and password and verify):
@@ -106,14 +107,22 @@ def register():
 
 @app.route('/blog', methods=['GET'])
 def blogreader():
-    #if blog was passed an id that exists, it will go to that individual blog post, otherwise, it will go to the main blog page that lists all
+    #if blog was passed a blog id that exists, it will go to that individual blog post, otherwise, it will check for user id and if there is none, it goes to the main blog page that lists all.
     blogid = request.args.get("id")
     blog = Blog.query.filter_by(id = blogid).first()
-    if not blog:
-        blogs = Blog.query.filter_by(deleted=False).all()
-        return render_template('blogreader.html', title="All Blog Posts", blogs=blogs)
+    if blog:
+        user = User.query.filter_by(id = blog.owner_id).first()
+        return render_template('individualpost.html', title=blog.title, blog=blog, user=user)
     else:
-        return render_template('individualpost.html', title=blog.title, blog=blog)
+        #if blog was passed a userid that exists, it will go to that user's blog list. blogid takes priority.
+        userid = request.args.get("user")
+        user = User.query.filter_by(id = userid).first()
+        if user:
+            blogs = Blog.query.filter_by(owner_id = user.id).all()
+            return render_template('individualuser.html', title=user.username, blogs=blogs, user=user)
+        else:
+            blogs = Blog.query.filter_by(deleted=False).all()
+            return render_template('blogreader.html', title="All Blog Posts", blogs=blogs)
 
 
 @app.route('/newpost', methods=['POST', 'GET'])
